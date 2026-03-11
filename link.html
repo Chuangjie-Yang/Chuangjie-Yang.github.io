@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>友链 - 动态星空博客</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            background: transparent;
+        }
+        
+        body {
+            min-height: 100vh;
+            background: #000;
+            overflow-x: hidden;
+            font-family: "Microsoft Yahei", "PingFang SC", sans-serif;
+            scroll-behavior: smooth;
+            padding-top: 80px;
+        }
+        
+        #stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+
+        #main-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            padding: 15px 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transform: translateY(0);
+            transition: opacity 0.8s ease-out 0.2s, transform 0.3s ease;
+        }
+
+        #main-nav a {
+            color: #d87999;
+            font-size: 18px;
+            text-decoration: none;
+            transition: color 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #main-nav a img {
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
+            filter: brightness(0) saturate(100%) invert(43%) sepia(14%) saturate(1849%) hue-rotate(325deg) brightness(95%) contrast(91%);
+        }
+
+        #main-nav a:hover img {
+            filter: brightness(0) saturate(100%) invert(70%) sepia(8%) saturate(537%) hue-rotate(314deg) brightness(100%) contrast(85%);
+        }
+
+        #main-nav a:hover {
+            color: #ae8d8d;
+        }
+
+        .link-section {
+            position: relative;
+            width: 100%;
+            padding: 80px 20px;
+            z-index: 5;
+            color: #fff;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out 0.5s, transform 0.8s ease-out 0.5s;
+        }
+
+        /* 只有标题和副标题用宋体 */
+        .link-title {
+            font-size: 60px;
+            color: #d87999;
+            margin: 0 auto 10px;
+            max-width: 800px;
+            text-align: left;
+            font-family: "SimSun", "宋体", serif !important;
+        }
+
+        .link-subtitle {
+            font-size: 22px;
+            color: #ae8d8d;
+            margin: 0 auto 50px;
+            max-width: 800px;
+            text-align: left;
+            font-family: "SimSun", "宋体", serif !important;
+        }
+
+        .link-list {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .link-item {
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            transition: transform 0.3s ease;
+        }
+
+        .link-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .link-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            border: 2px solid #d87999;
+        }
+
+        .link-name {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .link-name a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .link-name a:hover {
+            color: #d87999;
+        }
+
+        .link-desc {
+            font-size: 14px;
+            color: #ccc;
+            line-height: 1.5;
+        }
+
+        footer {
+            position: relative;
+            width: 100%;
+            padding: 40px 20px 20px;
+            margin-top: 80px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            color: #ccc;
+            text-align: center;
+            z-index: 5;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out 0.8s, transform 0.8s ease-out 0.8s;
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        .copyright {
+            margin-bottom: 8px;
+        }
+        .power-by {
+            color: #d87999;
+            margin-bottom: 12px;
+        }
+        .footer-link {
+            color: #d87999 !important;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .footer-link:hover {
+            color: #fff !important;
+        }
+        .beian-info {
+            font-size: 12px;
+            color: #888;
+        }
+
+        @media (max-width:768px){
+            .link-title {font-size: 32px;}
+            .link-subtitle {font-size: 18px;}
+            .link-list {grid-template-columns: 1fr;}
+            .link-item {padding: 15px;}
+            .link-avatar {width: 50px; height: 50px;}
+            
+            footer {
+                padding: 30px 15px 15px;
+            }
+            .footer-content {
+                font-size: 13px;
+            }
+            .beian-info {
+                font-size: 11px;
+            }
+        }
+
+        /* 回到顶部按钮 */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(216, 121, 153, 0.8);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: translateY(20px);
+            z-index: 999;
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .back-to-top:hover {
+            background: rgba(216, 121, 153, 1);
+        }
+
+        @media (max-width:768px) {
+            .back-to-top {
+                width: 40px;
+                height: 40px;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="stars"></canvas>
+    
+    <nav id="main-nav">
+        <a href="index.html"><img src="icons/home.png" alt="">首页</a>
+        <a href="archive.html"><img src="icons/archive.png" alt="">归档</a>
+        <a href="note.html"><img src="icons/note.png" alt="">手记</a>
+        <a href="link.html"><img src="icons/link.png" alt="">友链</a>
+        <a href="#" onclick="randomJump(); return false;"><img src="icons/jump.png" alt="">跃迁</a>
+    </nav>
+
+    <section class="link-section">
+        <h1 class="link-title">友链</h1>
+        <div class="link-subtitle">朋友们</div>
+        <div class="link-list">
+            <div class="link-item">
+                <img src="https://via.placeholder.com/60" alt="友链头像" class="link-avatar">
+                <div class="link-name"><a href="#">友链1</a></div>
+                <p class="link-desc">这是一个友链的简短描述。</p>
+            </div>
+            <div class="link-item">
+                <img src="https://via.placeholder.com/60" alt="友链头像" class="link-avatar">
+                <div class="link-name"><a href="#">友链2</a></div>
+                <p class="link-desc">另一个友链的介绍文字。</p>
+            </div>
+            <div class="link-item">
+                <img src="https://via.placeholder.com/60" alt="友链头像" class="link-avatar">
+                <div class="link-name"><a href="#">友链3</a></div>
+                <p class="link-desc">友链描述信息。</p>
+            </div>
+            <div class="link-item">
+                <img src="https://via.placeholder.com/60" alt="友链头像" class="link-avatar">
+                <div class="link-name"><a href="#">友链4</a></div>
+                <p class="link-desc">简短的友链介绍。</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="copyright">Copyright © 2026 Conny's Blog. All Rights Reserved.</div>
+            <div class="power-by">Power by Conny Jabrado | Designed with Chuangjie Yang</div>
+            <div class="beian-info">萌ICP备20240924号 | 网站安全检测 ✔</div>
+        </div>
+    </footer>
+
+    <!-- 回到顶部按钮 -->
+    <div class="back-to-top" id="backToTop">↑</div>
+
+<script>
+    let lastScrollY = 0;
+    const nav = document.getElementById('main-nav');
+
+    window.history.scrollRestoration = "manual";
+    window.scrollTo(0, 0);
+
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    class Star {
+        constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 0.8 + 0.5;
+            this.alpha = Math.random() * 0.1 + 0.9;
+            this.moveX = (Math.random() - 0.5) * 0.4;
+            this.moveY = (Math.random() - 0.5) * 0.4;
+        }
+        update() {
+            this.x += this.moveX;
+            this.y += this.moveY;
+            if (this.x < 0) this.x = canvas.width;
+            if (this.x > canvas.width) this.x = 0;
+            if (this.y < 0) this.y = canvas.height;
+            if (this.y > canvas.height) this.y = 0;
+        }
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 220, 230, ${this.alpha})`;
+            ctx.fill();
+        }
+    }
+
+    const stars = Array.from({length:300},()=>new Star());
+    function animateStars() {
+        ctx.fillStyle = 'rgba(0,0,0,1)';
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        stars.forEach(s=>{s.update();s.draw();});
+        requestAnimationFrame(animateStars);
+    }
+    animateStars();
+
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            document.getElementById('stars').style.opacity = 1;
+            document.getElementById('stars').style.transform = 'translateY(0)';
+            document.getElementById('main-nav').style.opacity = 1;
+            document.querySelector('.link-section').style.opacity = 1;
+            document.querySelector('.link-section').style.transform = 'translateY(0)';
+            document.querySelector('footer').style.opacity = 1;
+            document.querySelector('footer').style.transform = 'translateY(0)';
+        }, 100);
+    });
+
+    function randomJump() {
+        const urls = [
+            'https://www.google.com',
+            'https://github.com',
+            'https://stackoverflow.com',
+            'https://www.wikipedia.org',
+            'https://www.reddit.com',
+            'https://news.ycombinator.com',
+            'https://www.youtube.com',
+            'https://www.netflix.com',
+            'https://www.spotify.com',
+            'https://www.medium.com'
+        ];
+        const randomUrl = urls[Math.floor(Math.random() * urls.length)];
+        window.open(randomUrl, '_blank');
+    }
+
+    window.addEventListener('scroll', function() {
+        const currentScrollY = window.scrollY;
+        if (currentScrollY > lastScrollY && currentScrollY > 100) {
+            nav.style.transform = 'translateY(-100%)';
+        } else {
+            nav.style.transform = 'translateY(0)';
+        }
+        lastScrollY = currentScrollY;
+    });
+
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+
+    // 回到顶部功能
+    const backToTopBtn = document.getElementById('backToTop');
+
+    window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+            backToTopBtn.classList.add('show');
+        } else {
+            backToTopBtn.classList.remove('show');
+        }
+    });
+
+    backToTopBtn.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+</script>
+</body>
+</html>
