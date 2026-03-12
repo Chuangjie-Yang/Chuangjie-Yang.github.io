@@ -6,7 +6,7 @@ const outputFile = path.join(__dirname, 'articles.js');
 
 function buildArticles() {
   const articles = [];
-  const categories = ['tech', 'note'];
+  const categories = ['tech', 'note', 'link'];
   
   categories.forEach(category => {
     const categoryDir = path.join(articlesDir, category);
@@ -47,6 +47,23 @@ function buildArticles() {
             content,
             category
           });
+        } else if (file === 'links.json' && category === 'link') {
+          const filePath = path.join(categoryDir, file);
+          const linksContent = fs.readFileSync(filePath, 'utf8');
+          try {
+            const links = JSON.parse(linksContent);
+            articles.push({
+              id: articles.length + 1,
+              title: '友链',
+              date: new Date().toISOString().split('T')[0],
+              desc: '友情链接列表',
+              content: JSON.stringify(links),
+              category: 'link',
+              isJson: true
+            });
+          } catch (error) {
+            console.error('解析links.json失败:', error);
+          }
         }
       });
     }

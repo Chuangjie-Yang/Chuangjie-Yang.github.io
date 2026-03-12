@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>友链 - 动态星空博客</title>
+    <title>朋友们</title>
+    <link rel="icon" href="pic1.png" type="image/png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
     <style>
         * {
@@ -23,6 +24,12 @@
             font-family: "Microsoft Yahei", "PingFang SC", sans-serif;
             scroll-behavior: smooth;
             padding-top: 80px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .main-content {
+            flex: 1;
         }
         
         #stars {
@@ -69,7 +76,7 @@
             width: 18px;
             height: 18px;
             object-fit: contain;
-            filter: brightness(0) saturate(100%) invert(43%) sepia(14%) saturate(1849%) hue-rotate(325deg) brightness(95%) contrast(91%);
+            filter: brightness(0) saturate(100%) invert(42%) sepia(9%) saturate(2395%) hue-rotate(327deg) brightness(100%) contrast(84%);
         }
 
         #main-nav a:hover img {
@@ -78,6 +85,22 @@
 
         #main-nav a:hover {
             color: #ae8d8d;
+        }
+        
+        /* 汉堡菜单按钮 */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 15px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(0,0,0,0.8);
+            border: none;
+            color: #d87999;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 4px;
         }
 
         .link-section {
@@ -199,26 +222,6 @@
             font-size: 12px;
             color: #888;
         }
-
-        @media (max-width:768px){
-            .link-title {font-size: 32px;}
-            .link-subtitle {font-size: 18px;}
-            .link-list {grid-template-columns: 1fr;}
-            .link-item {padding: 15px;}
-            .link-avatar {width: 50px; height: 50px;}
-            
-            footer {
-                padding: 30px 15px 15px;
-            }
-            .footer-content {
-                font-size: 13px;
-            }
-            .beian-info {
-                font-size: 11px;
-            }
-        }
-
-        /* 回到顶部按钮 */
         .back-to-top {
             position: fixed;
             bottom: 30px;
@@ -247,12 +250,45 @@
             background: rgba(216, 121, 153, 1);
         }
 
-        @media (max-width:768px) {
-            .back-to-top {
-                width: 40px;
-                height: 40px;
-                bottom: 20px;
-                right: 20px;
+        @media (max-width:768px){
+            /* 导航栏适配 */
+            .menu-toggle {
+                display: block;
+            }
+            
+            #main-nav {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 250px;
+                height: 100vh;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 30px;
+                background: rgba(0,0,0,0.95);
+                transition: right 0.3s ease;
+            }
+            
+            #main-nav.active {
+                right: 0;
+            }
+            
+            /* 友链内容适配 */
+            .link-title {font-size: 32px;}
+            .link-subtitle {font-size: 18px;}
+            .link-list {grid-template-columns: 1fr;}
+            .link-item {padding: 15px;}
+            .link-avatar {width: 50px; height: 50px;}
+            
+            footer {
+                padding: 30px 15px 15px;
+            }
+            .footer-content {
+                font-size: 13px;
+            }
+            .beian-info {
+                font-size: 11px;
             }
         }
     </style>
@@ -260,6 +296,11 @@
 <body>
 
     <canvas id="stars"></canvas>
+    
+    <!-- 汉堡菜单按钮 -->
+    <button class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
     
     <nav id="main-nav">
         <a href="index.html"><img src="icons/home.png" alt="">首页</a>
@@ -269,32 +310,16 @@
         <a href="#" onclick="randomJump(); return false;"><img src="icons/jump.png" alt="">跃迁</a>
     </nav>
 
-    <section class="link-section">
-        <h1 class="link-title">友链</h1>
-        <div class="link-subtitle">朋友们</div>
-        <div class="link-list">
-            <div class="link-item">
-                <img src="https://via.placeholder.com/60" alt="友链头像" class="link-avatar">
-                <div class="link-name"><a href="#">友链1</a></div>
-                <p class="link-desc">这是一个友链的简短描述。</p>
+    <div class="main-content">
+        <section class="link-section">
+            <h1 class="link-title">友链</h1>
+            <div class="link-subtitle">朋友们</div>
+            <div class="link-list">
             </div>
-            <div class="link-item">
-                <img src="https://via.placeholder.com/60" alt="友链头像" class="link-avatar">
-                <div class="link-name"><a href="#">友链2</a></div>
-                <p class="link-desc">另一个友链的介绍文字。</p>
-            </div>
-            <div class="link-item">
-                <img src="https://via.placeholder.com/60" alt="友链头像" class="link-avatar">
-                <div class="link-name"><a href="#">友链3</a></div>
-                <p class="link-desc">友链描述信息。</p>
-            </div>
-            <div class="link-item">
-                <img src="https://via.placeholder.com/60" alt="友链头像" class="link-avatar">
-                <div class="link-name"><a href="#">友链4</a></div>
-                <p class="link-desc">简短的友链介绍。</p>
-            </div>
-        </div>
-    </section>
+        </section>
+        
+        <div class="back-to-top" id="backToTop">↑</div>
+    </div>
 
     <footer>
         <div class="footer-content">
@@ -304,12 +329,10 @@
         </div>
     </footer>
 
-    <!-- 回到顶部按钮 -->
-    <div class="back-to-top" id="backToTop">↑</div>
-
-<script>
+<script src="articles.js"></script>
+    <script>
     let lastScrollY = 0;
-    const nav = document.getElementById('main-nav');
+    const menu = document.getElementById('main-nav');
 
     window.history.scrollRestoration = "manual";
     window.scrollTo(0, 0);
@@ -363,7 +386,64 @@
             document.querySelector('footer').style.opacity = 1;
             document.querySelector('footer').style.transform = 'translateY(0)';
         }, 100);
+        
+        // 生成友链列表
+        generateLinkList();
     });
+    
+    function generateLinkList() {
+        // 从articles数组中获取友链数据
+        const linkArticles = articles.filter(article => article.category === 'link');
+        
+        if (linkArticles.length > 0) {
+            const linkArticle = linkArticles.find(article => article.isJson);
+            const linkListContainer = document.querySelector('.link-list');
+            
+            // 清空现有内容
+            linkListContainer.innerHTML = '';
+            
+            if (linkArticle) {
+                // 解析JSON格式的友链数据
+                try {
+                    const links = JSON.parse(linkArticle.content);
+                    links.forEach(link => {
+                        const linkItem = document.createElement('div');
+                        linkItem.className = 'link-item';
+                        linkItem.innerHTML = `
+                            <div class="link-avatar" style="background-color: ${link.pic}; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px;">${link.name.charAt(0)}</div>
+                            <div class="link-name"><a href="${link.url}" target="_blank">${link.name}</a></div>
+                            <p class="link-desc">${link.desc}</p>
+                        `;
+                        linkListContainer.appendChild(linkItem);
+                    });
+                } catch (error) {
+                    console.error('解析友链数据失败:', error);
+                }
+            } else {
+                // 回退到解析Markdown表格格式
+                const linkContent = linkArticles[0].content;
+                const linkMatches = linkContent.match(/\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|/g);
+                if (linkMatches) {
+                    // 跳过表头行
+                    for (let i = 1; i < linkMatches.length; i++) {
+                        const match = linkMatches[i].trim();
+                        const parts = match.split('|').map(part => part.trim()).filter(part => part !== '');
+                        if (parts.length >= 3) {
+                            const [name, url, desc] = parts;
+                            const linkItem = document.createElement('div');
+                            linkItem.className = 'link-item';
+                            linkItem.innerHTML = `
+                                <img src="https://via.placeholder.com/60" alt="${name} 头像" class="link-avatar">
+                                <div class="link-name"><a href="${url}" target="_blank">${name}</a></div>
+                                <p class="link-desc">${desc}</p>
+                            `;
+                            linkListContainer.appendChild(linkItem);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     function randomJump() {
         const urls = [
@@ -382,6 +462,34 @@
         window.open(randomUrl, '_blank');
     }
 
+    // 汉堡菜单功能
+    const menuToggle = document.getElementById('menuToggle');
+    const nav = document.getElementById('main-nav');
+    
+    menuToggle.addEventListener('click', function() {
+        nav.classList.toggle('active');
+        // 切换菜单图标
+        const icon = menuToggle.querySelector('i');
+        if (nav.classList.contains('active')) {
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-times');
+        } else {
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        }
+    });
+
+    // 点击导航链接后关闭菜单
+    const navLinks = nav.querySelectorAll('a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            nav.classList.remove('active');
+            const icon = menuToggle.querySelector('i');
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        });
+    });
+
     window.addEventListener('scroll', function() {
         const currentScrollY = window.scrollY;
         if (currentScrollY > lastScrollY && currentScrollY > 100) {
@@ -396,7 +504,7 @@
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     });
-
+    
     // 回到顶部功能
     const backToTopBtn = document.getElementById('backToTop');
 

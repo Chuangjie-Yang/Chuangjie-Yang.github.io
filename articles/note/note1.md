@@ -1,13 +1,9 @@
-# 手记1
+date: 2026-03-12
+abstract: A essay for recent feeling
 
-date: 2026-03-10
+# Anxiety
 
-description: 这是一篇手记，记录生活中的点滴。
+This is my first essay and I wanna say something recent feeling. I am a junior student and it's time to choose which direction for the future.Everyone seems to know directly what they want.To find a job? or to prepare for the undergraduate exam.But Ifor me, I still don't know which way is suitable for me,so I feel such anxious.
 
-这是一篇手记，记录生活中的点滴。
 
-今天天气很好，出去散步，看到了美丽的风景。
 
-## 感悟
-
-生活中有很多美好的瞬间，我们应该珍惜当下。

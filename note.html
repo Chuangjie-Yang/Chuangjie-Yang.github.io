@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>手记 - 动态星空博客</title>
+    <title>记录一段时光</title>
+    <link rel="icon" href="pic1.png" type="image/png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="articles.js"></script>
@@ -25,6 +26,12 @@
             font-family: "Microsoft Yahei", "PingFang SC", sans-serif;
             scroll-behavior: smooth;
             padding-top: 80px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .main-content {
+            flex: 1;
         }
         
         #stars {
@@ -80,6 +87,22 @@
 
         #main-nav a:hover {
             color: #ae8d8d;
+        }
+        
+        /* 汉堡菜单按钮 */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 15px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(0,0,0,0.8);
+            border: none;
+            color: #d87999;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 4px;
         }
 
         /* 手记内容入场动画：延迟+渐入+上移 */
@@ -356,6 +379,30 @@
         }
 
         @media (max-width:768px){
+            /* 导航栏适配 */
+            .menu-toggle {
+                display: block;
+            }
+            
+            #main-nav {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 250px;
+                height: 100vh;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 30px;
+                background: rgba(0,0,0,0.95);
+                transition: right 0.3s ease;
+            }
+            
+            #main-nav.active {
+                right: 0;
+            }
+            
+            /* 手记内容适配 */
             .note-title {font-size: 32px;}
             .note-post-title {font-size: 20px;}
             .note-desc {font-size: 16px;}
@@ -379,6 +426,11 @@
 
     <canvas id="stars"></canvas>
     
+    <!-- 汉堡菜单按钮 -->
+    <button class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+    
     <nav id="main-nav">
         <a href="index.html"><img src="icons/home.png" alt="">首页</a>
         <a href="archive.html"><img src="icons/archive.png" alt="">归档</a>
@@ -387,18 +439,23 @@
         <a href="#" onclick="randomJump(); return false;"><img src="icons/jump.png" alt="">跃迁</a>
     </nav>
 
-    <section class="note-section">
-        <h1 class="note-title">手记</h1>
-        <div id="article-content" class="article-content"></div>
-        <div class="note-list" id="note-list" style="display: none;"></div>
-        <div class="pagination" id="pagination" style="display: none;">
-            <button class="pagination-btn" id="first-page-btn">首页</button>
-            <button class="pagination-btn" id="prev-btn">上一页</button>
-            <div class="page-numbers" id="page-numbers"></div>
-            <button class="pagination-btn" id="next-btn">下一页</button>
-            <button class="pagination-btn" id="last-page-btn">尾页</button>
-        </div>
-    </section>
+    <div class="main-content">
+        <section class="note-section">
+            <h1 class="note-title">手记</h1>
+            <div id="article-content" class="article-content"></div>
+            <div class="note-list" id="note-list" style="display: none;"></div>
+            <div class="pagination" id="pagination" style="display: none;">
+                <button class="pagination-btn" id="first-page-btn">首页</button>
+                <button class="pagination-btn" id="prev-btn">上一页</button>
+                <div class="page-numbers" id="page-numbers"></div>
+                <button class="pagination-btn" id="next-btn">下一页</button>
+                <button class="pagination-btn" id="last-page-btn">尾页</button>
+            </div>
+        </section>
+
+        <!-- 回到顶部按钮 -->
+        <div class="back-to-top" id="backToTop">↑</div>
+    </div>
 
     <footer>
         <div class="footer-content">
@@ -408,14 +465,11 @@
         </div>
     </footer>
 
-    <!-- 回到顶部按钮 -->
-    <div class="back-to-top" id="backToTop">↑</div>
-
 <script>
     let isAnimateComplete = false;
     let lastScrollPosition = 0;
     let lastScrollY = 0;
-    const nav = document.getElementById('main-nav');
+    const menu = document.getElementById('main-nav');
 
     window.history.scrollRestoration = "manual";
     window.scrollTo(0, 0);
@@ -546,6 +600,34 @@
         const randomUrl = urls[Math.floor(Math.random() * urls.length)];
         window.open(randomUrl, '_blank');
     }
+
+    // 汉堡菜单功能
+    const menuToggle = document.getElementById('menuToggle');
+    const nav = document.getElementById('main-nav');
+    
+    menuToggle.addEventListener('click', function() {
+        nav.classList.toggle('active');
+        // 切换菜单图标
+        const icon = menuToggle.querySelector('i');
+        if (nav.classList.contains('active')) {
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-times');
+        } else {
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        }
+    });
+
+    // 点击导航链接后关闭菜单
+    const navLinks = nav.querySelectorAll('a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            nav.classList.remove('active');
+            const icon = menuToggle.querySelector('i');
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        });
+    });
 
     window.addEventListener('scroll', function() {
         const currentScrollY = window.scrollY;

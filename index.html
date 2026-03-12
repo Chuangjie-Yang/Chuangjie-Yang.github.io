@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>动态星空博客（最终版）</title>
+    <title>Hi, I'm Conny</title>
+    <link rel="icon" href="pic1.png" type="image/png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
     <script src="articles.js"></script>
     <style>
@@ -18,12 +19,18 @@
         }
         
         body {
-            min-height: 500vh;
+            min-height: 100vh;
             background: #000;
             overflow-x: hidden;
             font-family: "Microsoft Yahei", "PingFang SC", sans-serif;
             scroll-behavior: smooth;
             padding-top: 80px; /* 给导航栏预留空间 */
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .main-content {
+            flex: 1;
         }
         
         /* 星空保留fixed作为全局背景 */
@@ -57,6 +64,22 @@
             /* 移除 translateY，避免滚动时位移 */
             transform: translateY(0);
             transition: transform 0.3s ease; /* 添加过渡动画 */
+        }
+        
+        /* 汉堡菜单按钮 */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 15px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(0,0,0,0.8);
+            border: none;
+            color: #d87999;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 4px;
         }
 
         #main-nav a {
@@ -288,9 +311,35 @@
         }
 
         @media (max-width:768px){
+            /* 导航栏适配 */
+            .menu-toggle {
+                display: block;
+            }
+            
+            #main-nav {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 250px;
+                height: 100vh;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 30px;
+                background: rgba(0,0,0,0.95);
+                transition: right 0.3s ease;
+            }
+            
+            #main-nav.active {
+                right: 0;
+            }
+            
+            /* 时间轴适配 */
             .timeline::before{left:20px;}
             .timeline-item{width:100%;padding-left:60px !important;margin-left:0 !important;text-align:left !important;}
             .timeline-item .timeline-dot{left:-10px !important;}
+            
+            /* 首屏适配 */
             #right-center-image {width: 250px; right: 8%;} /* 移动端同步微调 */
             .typewriter-line1 {font-size: 5vw;}
             .typewriter-line2, .typewriter-line3 {font-size: 6vw;}
@@ -601,6 +650,11 @@
 
     <canvas id="stars"></canvas>
     
+    <!-- 汉堡菜单按钮 -->
+    <button class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+    
     <!-- 导航栏：始终在顶部 -->
     <nav id="main-nav">
         <a href="index.html"><img src="icons/home.png" alt="">首页</a>
@@ -610,88 +664,93 @@
         <a href="#" onclick="randomJump(); return false;"><img src="icons/jump.png" alt="">跃迁</a>
     </nav>
 
-    <!-- 首屏：relative区域 -->
-    <section class="hero-section">
-        <!-- 打字机容器：独立绝对定位 -->
-        <div class="hero-text-container">
-            <div class="hero-text">
-                <div class="typewriter-line1 typewriter-text"></div>
-                <div class="typewriter-line2 typewriter-text"></div>
-                <div class="typewriter-line3 typewriter-text"></div>
-            </div>
-        </div>
-
-        <div class="social-icons">
-            <a href="#"><i class="fa-brands fa-weibo"></i></a>
-            <a href="#"><i class="fa-brands fa-bilibili"></i></a>
-            <a href="#"><i class="fa-brands fa-github"></i></a>
-            <a href="#"><i class="fa-brands fa-instagram"></i></a>
-            <a href="#"><i class="fa-brands fa-telegram"></i></a>
-        </div>
-
-        <img id="right-center-image" src="pic0.png" alt="个人形象图">
-        <div class="scroll-tip">
-            <i class="fas fa-chevron-down"></i>
-        </div>
-    </section>
-
-    <!-- 时间轴：relative -->
-    <section class="timeline-section">
-        <div class="timeline" id="article-timeline"></div>
-    </section>
-
-    <!-- 当前时间 -->
-    <section class="time-section">
-        <div id="current-time"></div>
-        <div id="day-progress"></div>
-    </section>
-
-    <!-- 导航选项 -->
-    <section class="navigation-section">
-        <div class="nav-options">
-            <span class="nav-text">风向标</span>
-            <a href="#" class="nav-link" onclick="randomJump(); return false;">去别处看看</a>
-        </div>
-    </section>
-
-    <!-- ========== 修改：评论区（替代原封笔区域） ========== -->
-    <section class="comment-section">
-        <!-- 说说标题 + 分割线 -->
-        <h2 class="comment-title">说说</h2>
-        <div class="comment-divider"></div>
-
-        <!-- 评论输入区域 -->
-        <div class="comment-input-wrap">
-            <textarea id="comment-textarea" placeholder="分享你的想法..."></textarea>
-            <button class="comment-submit-btn" onclick="submitComment()">发布评论</button>
-        </div>
-
-        <!-- 评论列表 -->
-        <div class="comment-list" id="comment-list">
-            <!-- 示例评论1 -->
-            <div class="comment-item">
-                <div class="comment-header">
-                    <div class="comment-avatar">C</div>
-                    <div class="comment-author">Conny</div>
-                    <div class="comment-time">2026-03-11 10:00</div>
-                </div>
-                <div class="comment-content">
-                    欢迎来到我的博客～ 记录生活，分享技术，一起成长✨
+    <div class="main-content">
+        <!-- 首屏：relative区域 -->
+        <section class="hero-section">
+            <!-- 打字机容器：独立绝对定位 -->
+            <div class="hero-text-container">
+                <div class="hero-text">
+                    <div class="typewriter-line1 typewriter-text"></div>
+                    <div class="typewriter-line2 typewriter-text"></div>
+                    <div class="typewriter-line3 typewriter-text"></div>
                 </div>
             </div>
-            <!-- 示例评论2 -->
-            <div class="comment-item">
-                <div class="comment-header">
-                    <div class="comment-avatar">Y</div>
-                    <div class="comment-author">Yang</div>
-                    <div class="comment-time">2026-03-11 11:20</div>
+
+            <div class="social-icons">
+                <a href="#" onclick="showComingSoon(); return false;"><i class="fa-brands fa-weibo"></i></a>
+                <a href="https://space.bilibili.com/1446360961?spm_id_from=333.1007.0.0" target="_blank"><i class="fa-brands fa-bilibili"></i></a>
+                <a href="https://github.com/Chuangjie-Yang" target="_blank"><i class="fa-brands fa-github"></i></a>
+                <a href="#" onclick="showComingSoon(); return false;"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" onclick="showComingSoon(); return false;"><i class="fa-brands fa-telegram"></i></a>
+            </div>
+
+            <img id="right-center-image" src="pic0.png" alt="个人形象图">
+            <div class="scroll-tip">
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </section>
+
+        <!-- 时间轴：relative -->
+        <section class="timeline-section">
+            <div class="timeline" id="article-timeline"></div>
+        </section>
+
+        <!-- 当前时间 -->
+        <section class="time-section">
+            <div id="current-time"></div>
+            <div id="day-progress"></div>
+        </section>
+
+        <!-- 导航选项 -->
+        <section class="navigation-section">
+            <div class="nav-options">
+                <span class="nav-text">风向标</span>
+                <a href="#" class="nav-link" onclick="randomJump(); return false;">去别处看看</a>
+            </div>
+        </section>
+
+        <!-- ========== 修改：评论区（替代原封笔区域） ========== -->
+        <section class="comment-section">
+            <!-- 说说标题 + 分割线 -->
+            <h2 class="comment-title">说说</h2>
+            <div class="comment-divider"></div>
+
+            <!-- 评论输入区域 -->
+            <div class="comment-input-wrap">
+                <textarea id="comment-textarea" placeholder="分享你的想法..."></textarea>
+                <button class="comment-submit-btn" onclick="submitComment()">发布评论</button>
+            </div>
+
+            <!-- 评论列表 -->
+            <div class="comment-list" id="comment-list">
+                <!-- 示例评论1 -->
+                <div class="comment-item">
+                    <div class="comment-header">
+                        <div class="comment-avatar">C</div>
+                        <div class="comment-author">Conny</div>
+                        <div class="comment-time">2026-03-11 10:00</div>
+                    </div>
+                    <div class="comment-content">
+                        欢迎来到我的博客～ 记录生活，分享技术，一起成长✨
+                    </div>
                 </div>
-                <div class="comment-content">
-                    这个星空背景太好看了！代码写得也很棒，学习了👍
+                <!-- 示例评论2 -->
+                <div class="comment-item">
+                    <div class="comment-header">
+                        <div class="comment-avatar">Y</div>
+                        <div class="comment-author">Yang</div>
+                        <div class="comment-time">2026-03-11 11:20</div>
+                    </div>
+                    <div class="comment-content">
+                        这个星空背景太好看了！代码写得也很棒，学习了👍
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+
+        <!-- 回到顶部按钮 -->
+        <div class="back-to-top" id="backToTop">↑</div>
+    </div>
 
     <!-- 底部版权区域 -->
     <footer>
@@ -701,9 +760,6 @@
             <div class="beian-info">萌ICP备20240924号 | 网站安全检测 ✔</div>
         </div>
     </footer>
-
-    <!-- 回到顶部按钮 -->
-    <div class="back-to-top" id="backToTop">↑</div>
 
 <script>
     let isAnimateComplete = false;
@@ -827,8 +883,40 @@
         window.open(randomUrl, '_blank');
     }
 
-    // 元素获取
+    // 暂未开放提示
+    function showComingSoon() {
+        alert('暂未开放，敬请期待！');
+    }
+
+    // 汉堡菜单功能
+    const menuToggle = document.getElementById('menuToggle');
     const nav = document.getElementById('main-nav');
+    
+    menuToggle.addEventListener('click', function() {
+        nav.classList.toggle('active');
+        // 切换菜单图标
+        const icon = menuToggle.querySelector('i');
+        if (nav.classList.contains('active')) {
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-times');
+        } else {
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        }
+    });
+
+    // 点击导航链接后关闭菜单
+    const navLinks = nav.querySelectorAll('a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            nav.classList.remove('active');
+            const icon = menuToggle.querySelector('i');
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        });
+    });
+
+    // 元素获取
     const heroSection = document.querySelector('.hero-section');
     const timelineSection = document.querySelector('.timeline-section');
     const navigationSection = document.querySelector('.navigation-section');
