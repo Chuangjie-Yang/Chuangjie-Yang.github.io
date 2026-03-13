@@ -150,6 +150,9 @@
         .note-post-title {
             font-size: 24px;
             margin-bottom: 10px;
+            white-space: normal;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .note-post-title a {
@@ -400,6 +403,16 @@
             
             #main-nav.active {
                 right: 0;
+            }
+            
+            /* 手机端导航栏只显示文字，不显示图标 */
+            #main-nav a img {
+                display: none;
+            }
+            
+            #main-nav a {
+                font-size: 20px;
+                padding: 10px 0;
             }
             
             /* 手记内容适配 */

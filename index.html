@@ -294,6 +294,9 @@
         .timeline-title {
             font-size: 24px;
             margin-bottom: 15px;
+            white-space: normal;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
         .timeline-title a {
             color: #d87999;
@@ -334,13 +337,23 @@
                 right: 0;
             }
             
+            /* 手机端导航栏只显示文字，不显示图标 */
+            #main-nav a img {
+                display: none;
+            }
+            
+            #main-nav a {
+                font-size: 20px;
+                padding: 10px 0;
+            }
+            
             /* 时间轴适配 */
             .timeline::before{left:20px;}
             .timeline-item{width:100%;padding-left:60px !important;margin-left:0 !important;text-align:left !important;}
             .timeline-item .timeline-dot{left:-10px !important;}
             
             /* 首屏适配 */
-            #right-center-image {width: 250px; right: 8%;} /* 移动端同步微调 */
+            #right-center-image {width: 180px; right: 5%;} /* 移动端同步微调 */
             .typewriter-line1 {font-size: 5vw;}
             .typewriter-line2, .typewriter-line3 {font-size: 6vw;}
             .hero-text-container, .social-icons {left: 8%;} /* 移动端适配 */
@@ -1092,8 +1105,11 @@
 
     // 生成文章时间轴
     function generateArticleTimeline() {
+        // 过滤掉友链文件，只显示归档文件和手记文件
+        const filteredArticles = articles.filter(article => article.category !== 'link');
+        
         // 按日期排序，最新的文章排在前面
-        const sortedArticles = [...articles].sort((a, b) => new Date(b.date) - new Date(a.date));
+        const sortedArticles = [...filteredArticles].sort((a, b) => new Date(b.date) - new Date(a.date));
         
         // 取前6篇文章
         const recentArticles = sortedArticles.slice(0, 6);

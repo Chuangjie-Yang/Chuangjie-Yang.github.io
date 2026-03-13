@@ -126,6 +126,9 @@
             text-align: left;
             padding-bottom: 15px;
             border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            white-space: normal;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         /* 文章内容样式 */
@@ -350,6 +353,16 @@
             
             #main-nav.active {
                 right: 0;
+            }
+            
+            /* 手机端导航栏只显示文字，不显示图标 */
+            #main-nav a img {
+                display: none;
+            }
+            
+            #main-nav a {
+                font-size: 20px;
+                padding: 10px 0;
             }
             
             /* 文章内容适配 */
