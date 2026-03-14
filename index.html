@@ -63,7 +63,7 @@
             opacity: 0;
             /* 移除 translateY，避免滚动时位移 */
             transform: translateY(0);
-            transition: transform 0.3s ease; /* 添加过渡动画 */
+            transition: opacity 0.5s ease, transform 0.3s ease; /* 添加过渡动画 */
         }
         
         /* 汉堡菜单按钮 */
@@ -159,7 +159,7 @@
             left: 15%; /* 和打字机同步靠中间 */
             z-index: 20;
             display: flex;
-            gap: 30px;
+            gap: clamp(20px, 2vw, 30px);
             opacity: 0;
             transform: translateY(30px);
             transition: opacity 0.5s ease, transform 0.5s ease;
@@ -167,7 +167,7 @@
 
         .social-icons a {
             color: #d87999;
-            font-size: 32px;
+            font-size: clamp(24px, 3vw, 32px);
             transition: all 0.3s ease;
         }
 
@@ -183,7 +183,9 @@
             right: 12%; /* 关键修改：从10%→12%，靠中间一点点 */
             transform: translateY(-50%); 
             z-index: 5;
-            width: 400px;
+            max-width: 400px;
+            width: 30vw;
+            min-width: 150px;
             height: auto;
             opacity: 0;
             border-radius: 100px !important;
@@ -315,26 +317,21 @@
 
         @media (max-width:768px){
             /* 导航栏适配 */
-            .menu-toggle {
-                display: block;
-            }
-            
             #main-nav {
                 position: fixed;
                 top: 0;
-                right: -100%;
-                width: 250px;
-                height: 100vh;
-                flex-direction: column;
+                left: 0;
+                width: 100%;
+                height: auto;
+                flex-direction: row;
                 align-items: center;
                 justify-content: center;
-                gap: 30px;
+                gap: 15px;
                 background: rgba(0,0,0,0.95);
-                transition: right 0.3s ease;
-            }
-            
-            #main-nav.active {
-                right: 0;
+                padding: 10px 0;
+                transform: translateY(0);
+                transition: transform 0.3s ease;
+                z-index: 1000;
             }
             
             /* 手机端导航栏只显示文字，不显示图标 */
@@ -343,8 +340,9 @@
             }
             
             #main-nav a {
-                font-size: 20px;
-                padding: 10px 0;
+                font-size: 16px;
+                padding: 5px 10px;
+                color: #d87999;
             }
             
             /* 时间轴适配 */
@@ -353,17 +351,74 @@
             .timeline-item .timeline-dot{left:-10px !important;}
             
             /* 首屏适配 */
-            #right-center-image {width: 180px; right: 5%;} /* 移动端同步微调 */
+            /* 垂直排列形象图、打字机和社交图标并居中 */
+            #right-center-image {
+                position: absolute !important;
+                width: 180px !important;
+                right: auto !important;
+                left: 50% !important;
+                top: 20% !important;
+                transform: translateX(-50%) !important;
+                margin: 0 auto !important;
+                display: block !important;
+                z-index: 10 !important;
+            }
+            
+            .hero-text-container {
+                position: absolute !important;
+                left: 50% !important;
+                top: 50% !important;
+                transform: translateX(-50%) !important;
+                text-align: center !important;
+                margin: 0 auto !important;
+                display: block !important;
+                z-index: 10 !important;
+            }
+            
+            .social-icons {
+                position: absolute !important;
+                left: 50% !important;
+                top: 70% !important;
+                transform: translateX(-50%) !important;
+                margin: 0 auto !important;
+                justify-content: center !important;
+                display: flex !important;
+                z-index: 10 !important;
+            }
+            
             .typewriter-line1 {font-size: 5vw;}
             .typewriter-line2, .typewriter-line3 {font-size: 6vw;}
-            .hero-text-container, .social-icons {left: 8%;} /* 移动端适配 */
-            .social-icons {top: calc(45% + 160px);} /* 移动端社交图标位置微调 */
+            
+            /* 手机端时间区域字体调整 */
+            #current-time .time-label {
+                font-size: 5vw !important;
+                margin-bottom: 10px !important;
+            }
+            
+            #current-time .time-value {
+                font-size: 4vw !important;
+            }
+            
+            #day-progress .progress-label {
+                font-size: 4vw !important;
+                margin-bottom: 5px !important;
+            }
+            
+            #day-progress .progress-value {
+                font-size: 4vw !important;
+            }
+            
+            #day-progress .progress-warning {
+                font-size: 4vw !important;
+                margin-top: 5px !important;
+            }
         }
 
         /* 动画完成样式 */
         body.animate-complete #stars {opacity:1;transform:translateY(0);}
-        body.animate-complete #main-nav {opacity:1;} 
-        body.animate-complete #right-center-image {opacity:1;transform: translateY(-50%);}
+        body.animate-complete #main-nav {opacity:1;}
+        body.animate-complete #right-center-image {opacity:1;}
+        body.animate-complete .social-icons {opacity:1;transform: translateY(0);}
         body.animate-complete .scroll-tip {opacity:1;transform:translateX(-50%) translateY(0);}
 
         /* 当前时间区域 */
@@ -663,11 +718,6 @@
 
     <canvas id="stars"></canvas>
     
-    <!-- 汉堡菜单按钮 -->
-    <button class="menu-toggle" id="menuToggle">
-        <i class="fas fa-bars"></i>
-    </button>
-    
     <!-- 导航栏：始终在顶部 -->
     <nav id="main-nav">
         <a href="index.html"><img src="icons/home.png" alt="">首页</a>
@@ -777,6 +827,8 @@
 <script>
     let isAnimateComplete = false;
     let lastScrollPosition = 0;
+    let navBar = document.getElementById('main-nav');
+    let navHeight = navBar.offsetHeight;
 
     // 强制刷新回到顶部
     window.history.scrollRestoration = "manual";
@@ -834,9 +886,30 @@
             setTimeout(() => {
                 lastScrollPosition = window.scrollY;
                 checkAllShow();
+                // 添加滚动事件监听
+                window.addEventListener('scroll', handleScroll);
             }, 1500);
         }, 100);
     });
+
+    // 处理滚动事件，实现导航栏下滑隐藏，上滑显示
+    function handleScroll() {
+        if (!isAnimateComplete) return;
+        
+        const currentScrollPosition = window.scrollY;
+        
+        // 只有当滚动距离超过导航栏高度时才触发隐藏/显示逻辑
+        if (Math.abs(currentScrollPosition - lastScrollPosition) > 10) {
+            if (currentScrollPosition > lastScrollPosition && currentScrollPosition > navHeight) {
+                // 下滑，隐藏导航栏
+                navBar.style.transform = `translateY(-${navHeight + 10}px)`;
+            } else {
+                // 上滑，显示导航栏
+                navBar.style.transform = 'translateY(0)';
+            }
+            lastScrollPosition = currentScrollPosition;
+        }
+    }
 
     // 星空画布逻辑
     const canvas = document.getElementById('stars');
@@ -901,33 +974,7 @@
         alert('暂未开放，敬请期待！');
     }
 
-    // 汉堡菜单功能
-    const menuToggle = document.getElementById('menuToggle');
-    const nav = document.getElementById('main-nav');
-    
-    menuToggle.addEventListener('click', function() {
-        nav.classList.toggle('active');
-        // 切换菜单图标
-        const icon = menuToggle.querySelector('i');
-        if (nav.classList.contains('active')) {
-            icon.classList.remove('fa-bars');
-            icon.classList.add('fa-times');
-        } else {
-            icon.classList.remove('fa-times');
-            icon.classList.add('fa-bars');
-        }
-    });
 
-    // 点击导航链接后关闭菜单
-    const navLinks = nav.querySelectorAll('a');
-    navLinks.forEach(link => {
-        link.addEventListener('click', function() {
-            nav.classList.remove('active');
-            const icon = menuToggle.querySelector('i');
-            icon.classList.remove('fa-times');
-            icon.classList.add('fa-bars');
-        });
-    });
 
     // 元素获取
     const heroSection = document.querySelector('.hero-section');

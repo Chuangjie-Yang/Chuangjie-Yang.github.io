@@ -252,26 +252,21 @@
 
         @media (max-width:768px){
             /* 导航栏适配 */
-            .menu-toggle {
-                display: block;
-            }
-            
             #main-nav {
                 position: fixed;
                 top: 0;
-                right: -100%;
-                width: 250px;
-                height: 100vh;
-                flex-direction: column;
+                left: 0;
+                width: 100%;
+                height: auto;
+                flex-direction: row;
                 align-items: center;
                 justify-content: center;
-                gap: 30px;
+                gap: 15px;
                 background: rgba(0,0,0,0.95);
-                transition: right 0.3s ease;
-            }
-            
-            #main-nav.active {
-                right: 0;
+                padding: 10px 0;
+                transform: translateY(0);
+                transition: transform 0.3s ease;
+                z-index: 1000;
             }
             
             /* 手机端导航栏只显示文字，不显示图标 */
@@ -280,8 +275,9 @@
             }
             
             #main-nav a {
-                font-size: 20px;
-                padding: 10px 0;
+                font-size: 16px;
+                padding: 5px 10px;
+                color: #d87999;
             }
             
             /* 友链内容适配 */
@@ -306,11 +302,6 @@
 <body>
 
     <canvas id="stars"></canvas>
-    
-    <!-- 汉堡菜单按钮 -->
-    <button class="menu-toggle" id="menuToggle">
-        <i class="fas fa-bars"></i>
-    </button>
     
     <nav id="main-nav">
         <a href="index.html"><img src="icons/home.png" alt="">首页</a>
@@ -341,8 +332,10 @@
 
 <script src="articles.js"></script>
     <script>
-    let lastScrollY = 0;
-    const menu = document.getElementById('main-nav');
+    let isAnimateComplete = false;
+    let lastScrollPosition = 0;
+    let navBar = document.getElementById('main-nav');
+    let navHeight = navBar.offsetHeight;
 
     window.history.scrollRestoration = "manual";
     window.scrollTo(0, 0);
@@ -388,6 +381,9 @@
 
     window.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
+            document.body.classList.add('animate-complete');
+            isAnimateComplete = true;
+            
             document.getElementById('stars').style.opacity = 1;
             document.getElementById('stars').style.transform = 'translateY(0)';
             document.getElementById('main-nav').style.opacity = 1;
@@ -472,43 +468,29 @@
         window.open(randomUrl, '_blank');
     }
 
-    // 汉堡菜单功能
-    const menuToggle = document.getElementById('menuToggle');
-    const nav = document.getElementById('main-nav');
-    
-    menuToggle.addEventListener('click', function() {
-        nav.classList.toggle('active');
-        // 切换菜单图标
-        const icon = menuToggle.querySelector('i');
-        if (nav.classList.contains('active')) {
-            icon.classList.remove('fa-bars');
-            icon.classList.add('fa-times');
-        } else {
-            icon.classList.remove('fa-times');
-            icon.classList.add('fa-bars');
-        }
-    });
 
-    // 点击导航链接后关闭菜单
-    const navLinks = nav.querySelectorAll('a');
-    navLinks.forEach(link => {
-        link.addEventListener('click', function() {
-            nav.classList.remove('active');
-            const icon = menuToggle.querySelector('i');
-            icon.classList.remove('fa-times');
-            icon.classList.add('fa-bars');
-        });
-    });
 
-    window.addEventListener('scroll', function() {
-        const currentScrollY = window.scrollY;
-        if (currentScrollY > lastScrollY && currentScrollY > 100) {
-            nav.style.transform = 'translateY(-100%)';
-        } else {
-            nav.style.transform = 'translateY(0)';
+    // 处理滚动事件，实现导航栏下滑隐藏，上滑显示
+    function handleScroll() {
+        if (!isAnimateComplete) return;
+        
+        const currentScrollPosition = window.scrollY;
+        
+        // 只有当滚动距离超过导航栏高度时才触发隐藏/显示逻辑
+        if (Math.abs(currentScrollPosition - lastScrollPosition) > 10) {
+            if (currentScrollPosition > lastScrollPosition && currentScrollPosition > navHeight) {
+                // 下滑，隐藏导航栏
+                navBar.style.transform = `translateY(-${navHeight + 10}px)`;
+            } else {
+                // 上滑，显示导航栏
+                navBar.style.transform = 'translateY(0)';
+            }
+            lastScrollPosition = currentScrollPosition;
         }
-        lastScrollY = currentScrollY;
-    });
+    }
+
+    // 添加滚动事件监听
+    window.addEventListener('scroll', handleScroll);
 
     window.addEventListener('resize', () => {
         canvas.width = window.innerWidth;
