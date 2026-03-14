@@ -676,8 +676,10 @@
         data.forEach(item => {
             const maxLen = 30;
             const shortDesc = item.desc.length > maxLen ? item.desc.substring(0,maxLen)+'...' : item.desc;
-            const wordCount = item.desc.length;
-            const readTime = Math.max(1, Math.ceil(wordCount / 300));
+            // 根据文章完整内容计算字数（去除Markdown标记和空白字符）
+            const contentText = item.content.replace(/[#*\[\]()\-\n\r\t]/g, '').replace(/\s+/g, '');
+            const wordCount = contentText.length;
+            const readTime = Math.max(1, Math.ceil(wordCount / 500));
 
             listContainer.innerHTML += `
             <div class="note-item">

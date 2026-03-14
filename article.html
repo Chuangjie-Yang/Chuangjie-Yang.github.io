@@ -362,8 +362,39 @@
             }
             
             /* 文章内容适配 */
-            .article-title {font-size: 32px;}
-            .article-content {padding: 20px;}
+            .article-title {font-size: 32px; word-wrap: break-word; overflow-wrap: break-word;}
+            .article-content {
+                padding: 20px;
+                width: 90%;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+            .article-content p, .article-content h1, .article-content h2, .article-content h3, .article-content h4, .article-content h5, .article-content h6 {
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                white-space: normal;
+            }
+            .article-content pre {
+                width: 100%;
+                overflow-x: auto;
+            }
+            .article-content code {
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+            }
+            .article-content table {
+                width: 100%;
+                overflow-x: auto;
+                display: block;
+            }
+            .article-content a {
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+            }
+            .article-content p {
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+            }
             
             footer {
                 padding: 30px 15px 15px;
