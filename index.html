@@ -7,6 +7,8 @@
     <link rel="icon" href="pic1.png" type="image/png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
     <script src="articles.js"></script>
+    <!-- 预加载个人形象图 -->
+    <link rel="preload" as="image" href="pic0.png" type="image/png">
     <style>
         * {
             margin: 0;
@@ -191,6 +193,18 @@
             border-radius: 100px !important;
             transition: opacity 1s ease-out 0.4s, transform 1s ease-out 0.4s;
             pointer-events: none;
+            /* 优化图片加载：使用渐进式渲染 */
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            /* 先显示模糊占位，加载完成后变清晰 */
+            filter: blur(0px);
+            will-change: opacity;
+        }
+        
+        /* 图片加载中的模糊效果 */
+        #right-center-image.loading {
+            filter: blur(10px);
+            opacity: 0.5;
         }
 
         .scroll-tip {
@@ -747,7 +761,7 @@
                 <a href="#" onclick="showComingSoon(); return false;"><i class="fa-brands fa-telegram"></i></a>
             </div>
 
-            <img id="right-center-image" src="pic0.png" alt="个人形象图">
+            <img id="right-center-image" src="pic0.png" alt="个人形象图" class="loading" onload="this.classList.remove('loading')">
             <div class="scroll-tip">
                 <i class="fas fa-chevron-down"></i>
             </div>
